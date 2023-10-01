@@ -1,0 +1,6 @@
+body { background: #abc; text-align: center }
+div, p {
+    font-family: "Times New Roman", serif;
+    color: #036;
+}
+a { color: #456 }
