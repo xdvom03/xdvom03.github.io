@@ -17,7 +17,7 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <body>
 
 <header>
-Hi !
+Hi! Inverting!
 </header>
 
 <script>
@@ -108,12 +108,17 @@ And here, I'll try to put it on a canvas (and draw over it):
 
       console.log(pixelData);
       
-      //for (let i = 0; i < canvas.width; i++) {
-      //  console.log()
-      //  str = str + i;
-      //  document.write("...");
-      //  document.write("<br>"); // This is necessary for an actual line break!
-      //}
+      for (let i = 0; i < canvas.width; i++) {
+        console.log(i)
+        for (let j = 0; i < canvas.height; i++) {
+          var imgData = c2.createImageData(1,1)
+          imgData.data[0] = 255 - pixelData[i][j][0];
+          imgData.data[1] = 255 - pixelData[i][j][1];
+          imgData.data[2] = 255 - pixelData[i][j][2];
+          imgData.data[3] = 255 - pixelData[i][j][3];
+          c2.putImageData(imgData, i, j);
+        }
+      }
     }
     img.src = URL.createObjectURL(this.files[0]);
   }
