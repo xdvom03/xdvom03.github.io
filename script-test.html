@@ -91,12 +91,13 @@ And here, I'll try to put it on a canvas (and draw over it):
   input.onchange = function() {
     var img = new Image();
     img.onload = function() {
+      document.getElementById("cheers").innerHTML="<br> Yay, at least the function runs!";
       canvas.width = this.width;
       canvas.height = this.height;
       c2d.drawImage(this, 0, 0);
       URL.revokeObjectURL(this.src);
-      c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
-      c2d.stroke();
+      //c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
+      //c2d.stroke();
     }
     img.src = URL.createObjectURL(this.files[0]);
   }
