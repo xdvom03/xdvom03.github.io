@@ -41,20 +41,63 @@ And that's it...
 
 <script>
   function removeElement(elem) {
-    elem.parentNode.removeChild(elem);
+    // technically, just hides it
+    elem.style.display = "none";
   }
 
   function chomp() {
     console.log(document.getElementById("image-file"));
     console.log(document.getElementById("image-file").value);
     document.write("<br>");
-    document.write("Boo!");
+    document.write("You did it!!");
     //removeElement(document.getElementById("image-file"));
   }
 
   document.addEventListener("input", chomp);
 </script>
 
+
+
+
+
+
+
+This was recommended at SO:
+
+<input type="file" accept="image/*" onchange="loadFile(event)">
+<img id="output"/>
+<script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    // what does the  URL mean?
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+      URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+</script>
+
+<br>
+
+And here, I'll try to put it on a canvas (and draw over it):
+
+<br>
+
+<input type="file" accept="image/*" onchange="loadCanvas(event)">
+<canvas id="cn"/>
+<script>
+  var loadCanvas = function(event) {
+    var canvas = document.getElementById('cn');
+    var context = canvas.getContext("2d");
+
+    context.strokeStyle = "green";
+
+    inputFile = event.target.files[0];
+    context.drawImage(inputFile, 256, 256);
+    context.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
+    context.stroke();
+  };
+</script>
 
 <footer>
 Yee!
