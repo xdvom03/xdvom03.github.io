@@ -7,7 +7,6 @@ div, p, header, footer {
 a {
     font-family: "Times New Roman", serif;
     text-decoration: none;
-    cursor: help;
   }
 
 a:link { color: #084 }
