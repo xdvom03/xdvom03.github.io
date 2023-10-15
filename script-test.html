@@ -1,3 +1,10 @@
+<!--
+
+HTML, CSS, JS reference:
+http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
+
+-->
+
 <!DOCTYPE html>
 <html>
 
@@ -18,7 +25,8 @@ Yee!
 let str = '';
 for (let i = 0; i < 11; i++) {
   str = str + i;
-  document.writeln("!");
+  document.write("...");
+  document.write("<br>"); // This is necessary for an actual line break!
 }
 
 document.write(str);
@@ -30,6 +38,20 @@ This is an input thingy:
 <input id="image-file" type="file" />
 
 And that's it...
+
+<script>
+  function removeElement(elem) {
+    elem.parentNode.removeChild(elem);
+  }
+
+  function chomp() {
+    document.write(document.getElementById("image-file").value);
+    removeElement(document.getElementById("image-file"));
+  }
+
+  document.addEventListener("input", chomp);
+</script>
+
 
 <footer>
 Yee!
