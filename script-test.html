@@ -69,7 +69,7 @@ This was recommended at SO:
 <script>
   var loadFile = function(event) {
     var output = document.getElementById('output');
-    // what does the  URL mean?
+    // what does the URL mean?
     output.src = URL.createObjectURL(event.target.files[0]);
     output.onload = function() {
       URL.revokeObjectURL(output.src) // free memory
@@ -103,7 +103,7 @@ And here, I'll try to put it on a canvas (and draw over it):
 
 </script>
 
-<input type=file id=input> 
+<input type=file id=canvasInput> 
 <br>
 <canvas id="cn"/>
 
