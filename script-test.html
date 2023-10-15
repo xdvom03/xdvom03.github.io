@@ -114,7 +114,7 @@ And here, I'll try to put it on a canvas (and draw over it):
         for (let i = 0; i < pixelData.data.length; i++) {
           if (i % 4 != 3) {
             imgData.data[i] = 255 - pixelData.data[i];
-          } {
+          } else {
             imgData.data[i] = 255;
           }
         }
