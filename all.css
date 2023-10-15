@@ -1,6 +1,16 @@
 body { background: #abc; text-align: center }
-div, p {
+div, p, header, footer {
     font-family: "Times New Roman", serif;
     color: #036;
 }
-a { color: #456 }
+
+a {
+    font-family: "Times New Roman", serif;
+    text-decoration: none;
+    cursor: help;
+  }
+
+a:link { color: #084 }
+a:visited { color: #051 }
+a:hover { color: #349 }
+a:active { color: #abc }

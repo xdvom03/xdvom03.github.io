@@ -10,9 +10,6 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 Bug! Running the flipping code twice with different images, 
 the first one somehow continues...
 
-Also, the sanest speedup is probably going by columns
-(whose count is obviously changable)
-
 -->
 
 <!DOCTYPE html>
@@ -26,77 +23,17 @@ Also, the sanest speedup is probably going by columns
 
 <body>
 
-  <header id="site-header"></header> <!-- This gets edited by the script -->
-  <script async src="header.js"></script>
+<header id="site-header"></header> <!-- This gets edited by the script -->
+<script async src="header.js"></script>
+ 
 
-<script>
-
-let str = '';
-for (let i = 0; i < 4; i++) {
-  str = str + i;
-  document.write("...");
-  document.write("<br>"); // This is necessary for an actual line break!
-}
-
-document.write(str);
-
-</script>
-
-This is an input thingy:
-
-<input id="image-file" type="file" />
-
-And that's it...
-
-<script>
-  function removeElement(elem) {
-    // technically, just hides it
-    elem.style.display = "none";
-  }
-
-  function chomp() {
-    console.log(document.getElementById("image-file"));
-    console.log(document.getElementById("image-file").value);
-    document.getElementById("cheers").innerHTML="<br> You did it!!";
-    window.alert("Testing alerts...");
-    //removeElement(document.getElementById("image-file"));
-  }
-
-  document.getElementById("image-file").addEventListener("input", chomp);
-</script>
-
-<div id="cheers"> 
-</div>
-
-
-
-
-
-This was recommended at SO:
-
-<input type="file" accept="image/*" onchange="loadFile(event)">
-<img id="output"/>
-<script>
-  var loadFile = function(event) {
-    var output = document.getElementById('output');
-    // what does the URL mean?
-    output.src = URL.createObjectURL(event.target.files[0]);
-    output.onload = function() {
-      URL.revokeObjectURL(output.src) // free memory
-    }
-  };
-</script>
-
-<br>
-
-And here, I'll try to put it on a canvas (and draw over it):
+Input an image, see it inverted. This is of course not the end of this.
 
 <br>
 
 <input type=file id="canvasInput"> 
 <br>
-<canvas id="cn"> </canvas>
-<br>
+<canvas id="cn"></canvas>
 
 <script>
   var canvas = document.getElementById('cn');
@@ -109,7 +46,6 @@ And here, I'll try to put it on a canvas (and draw over it):
 
     var img = new Image();
     img.onload = function() {
-      document.getElementById("cheers").innerHTML="<br> Yay, at least the function runs!";
       canvas.width = this.width;
       canvas.height = this.height;
       c2d.drawImage(this, 0, 0);
@@ -146,8 +82,6 @@ And here, I'll try to put it on a canvas (and draw over it):
   }
 
 </script>
-
-And then something else?
 
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>
