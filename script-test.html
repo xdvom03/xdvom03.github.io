@@ -5,6 +5,16 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 
 -->
 
+<!--
+
+Bug! Running the flipping code twice with different images, 
+the first one somehow continues...
+
+Also, the sanest speedup is probably going by columns
+(whose count is obviously changable)
+
+-->
+
 <!DOCTYPE html>
 <html>
 
@@ -111,7 +121,7 @@ And here, I'll try to put it on a canvas (and draw over it):
       var i = 0;
       function step() {
         console.log(i);
-        var imgData = c2d.createImageData(1,5);
+        var imgData = c2d.createImageData(1,25);
         for (let j = 0; j < imgData.data.length; j++) {
           index = i * imgData.data.length + j;
           if (index % 4 != 3) {
@@ -120,7 +130,7 @@ And here, I'll try to put it on a canvas (and draw over it):
             imgData.data[j] = 255;
           }
         }
-        c2d.putImageData(imgData, Math.floor((i * 5) / canvas.width), (i * 5) % canvas.width);
+        c2d.putImageData(imgData, (i * 5) % canvas.width, Math.floor((i * 5) / canvas.width));
 
         i++;
         if (i < pixelData.data.length) {
