@@ -112,10 +112,10 @@ And here, I'll try to put it on a canvas (and draw over it):
         console.log(i)
         for (let j = 0; i < canvas.height; i++) {
           var imgData = c2d.createImageData(1,1)
-          imgData.data[0] = 255 - pixelData[i][j][0];
-          imgData.data[1] = 255 - pixelData[i][j][1];
-          imgData.data[2] = 255 - pixelData[i][j][2];
-          imgData.data[3] = 255 - pixelData[i][j][3];
+          imgData.data[0] = 255 - pixelData.data[i][j][0];
+          imgData.data[1] = 255 - pixelData.data[i][j][1];
+          imgData.data[2] = 255 - pixelData.data[i][j][2];
+          imgData.data[3] = 255 - pixelData.data[i][j][3];
           c2d.putImageData(imgData, i, j);
         }
       }
