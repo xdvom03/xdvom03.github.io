@@ -17,7 +17,7 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <body>
 
 <header>
-Hi! Inverting!
+Hi! Inverting! (or not)
 </header>
 
 <script>
@@ -112,11 +112,14 @@ And here, I'll try to put it on a canvas (and draw over it):
         console.log(i)
         var imgData = c2d.createImageData(1,1)
         for (let i = 0; i < pixelData.data.length; i++) {
+          /*
           if (i % 4 != 3) {
             imgData.data[i] = 255 - pixelData.data[i];
           } else {
             imgData.data[i] = 255;
           }
+          */
+          imgData.data[i] = pixelData.data[i];
         }
         c2d.putImageData(imgData, Math.floor(i / canvas.width), i % canvas.width);
       }
