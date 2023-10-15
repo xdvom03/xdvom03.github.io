@@ -108,7 +108,8 @@ And here, I'll try to put it on a canvas (and draw over it):
 
       console.log(pixelData);
       
-      function step(i = 0) {
+      var i = 0
+      function step() {
         console.log(i);
         var imgData = c2d.createImageData(1,1);
         for (let j = 0; j < imgData.data.length; j++) {
@@ -122,8 +123,9 @@ And here, I'll try to put it on a canvas (and draw over it):
           imgData.data[j] = pixelData.data[i * pixelData.data.length + j];
         }
         c2d.putImageData(imgData, Math.floor(i / canvas.width), i % canvas.width);
+        i++;
         if (i < pixelData.data.length) {
-          window.requestAnimationFrame(i + 1);
+          window.requestAnimationFrame(step);
         }
       }
       window.requestAnimationFrame(step);
