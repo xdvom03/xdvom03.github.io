@@ -17,7 +17,7 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <body>
 
 <header>
-Hi!
+Hi !
 </header>
 
 <script>
@@ -49,6 +49,7 @@ And that's it...
     console.log(document.getElementById("image-file"));
     console.log(document.getElementById("image-file").value);
     document.getElementById("cheers").innerHTML="<br> You did it!!";
+    window.alert("Testing alerts...");
     //removeElement(document.getElementById("image-file"));
   }
 
@@ -100,8 +101,19 @@ And here, I'll try to put it on a canvas (and draw over it):
       canvas.height = this.height;
       c2d.drawImage(this, 0, 0);
       URL.revokeObjectURL(this.src);
-      //c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
-      //c2d.stroke();
+      c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
+      c2d.stroke();
+
+      var pixelData = c2d.getImageData(0, 0, canvas.width, canvas.height)
+
+      console.log(pixelData);
+      
+      //for (let i = 0; i < canvas.width; i++) {
+      //  console.log()
+      //  str = str + i;
+      //  document.write("...");
+      //  document.write("<br>"); // This is necessary for an actual line break!
+      //}
     }
     img.src = URL.createObjectURL(this.files[0]);
   }
