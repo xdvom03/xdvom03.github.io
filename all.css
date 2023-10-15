@@ -6,10 +6,9 @@ div, p, header, footer {
 
 a {
     font-family: "Times New Roman", serif;
-    text-decoration: none;
   }
 
 a:link { color: #084 }
-a:visited { color: #051 }
-a:hover { color: #349 }
+a:visited { color: #060 }
+a:hover { color: #09e }
 a:active { color: #abc }
