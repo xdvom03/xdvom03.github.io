@@ -17,7 +17,7 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <body>
 
 <header>
-Hi! Inverting! (or not)
+Hi! Inverting! (indeed)
 </header>
 
 <script>
@@ -111,21 +111,19 @@ And here, I'll try to put it on a canvas (and draw over it):
       var i = 0
       function step() {
         console.log(i);
-        var imgData = c2d.createImageData(1,1);
+        var imgData = c2d.createImageData(1,5);
         for (let j = 0; j < imgData.data.length; j++) {
-          /*
           if (i % 4 != 3) {
-            imgData.data[i] = 255 - pixelData.data[i];
+            imgData.data[i] = 255 - pixelData.data[i * imgData.data.length + j];
           } else {
             imgData.data[i] = 255;
           }
-          */
-          imgData.data[j] = pixelData.data[i * pixelData.data.length + j];
         }
-        c2d.putImageData(imgData, Math.floor(i / canvas.width), i % canvas.width);
+        c2d.putImageData(imgData, Math.floor((i * 5) / canvas.width), (i * 5) % canvas.width);
+
         i++;
         if (i < pixelData.data.length) {
-          window.requestAnimationFrame(step);
+          window.requestAnimationFrame(step); // starts the function again
         }
       }
       window.requestAnimationFrame(step);
