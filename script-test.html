@@ -45,8 +45,10 @@ And that's it...
   }
 
   function chomp() {
-    document.write(document.getElementById("image-file").value);
-    removeElement(document.getElementById("image-file"));
+    print(document.getElementById("image-file").value);
+    document.write("<br>");
+    document.write("Boo!");
+    //removeElement(document.getElementById("image-file"));
   }
 
   document.addEventListener("input", chomp);
