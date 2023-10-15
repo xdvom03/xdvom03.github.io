@@ -109,7 +109,6 @@ And here, I'll try to put it on a canvas (and draw over it):
       console.log(pixelData);
       
       function step(i = 0) {
-        window.requestAnimationFrame();
         console.log(i);
         var imgData = c2d.createImageData(1,1);
         for (let j = 0; j < imgData.data.length; j++) {
