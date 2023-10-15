@@ -108,15 +108,16 @@ And here, I'll try to put it on a canvas (and draw over it):
 
       console.log(pixelData);
       
-      var i = 0
+      var i = 0;
       function step() {
         console.log(i);
         var imgData = c2d.createImageData(1,5);
         for (let j = 0; j < imgData.data.length; j++) {
-          if (i % 4 != 3) {
-            imgData.data[i] = 255 - pixelData.data[i * imgData.data.length + j];
+          index = i * imgData.data.length + j;
+          if (index % 4 != 3) {
+            imgData.data[j] = 255 - pixelData.data[index];
           } else {
-            imgData.data[i] = 255;
+            imgData.data[j] = 255;
           }
         }
         c2d.putImageData(imgData, Math.floor((i * 5) / canvas.width), (i * 5) % canvas.width);
