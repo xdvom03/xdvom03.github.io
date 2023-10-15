@@ -83,21 +83,29 @@ And here, I'll try to put it on a canvas (and draw over it):
 
 <br>
 
-<input type="file" accept="image/*" onchange="loadCanvas(event)">
-<canvas id="cn"/>
 <script>
-  var loadCanvas = function(event) {
-    var canvas = document.getElementById('cn');
-    var context = canvas.getContext("2d");
+  var canvas = document.getElementById('cn');
+  var input = document.getElementById('canvasInput');
+  var c2d = canvas.getContext('2d');
 
-    context.strokeStyle = "green";
+  input.onchange = function() {
+    var img = new Image();
+    img.onload = function() {
+      canvas.width = this.width;
+      canvas.height = this.height;
+      c2d.drawImage(this, 0, 0);
+      URL.revokeObjectURL(this.src);
+      c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
+      c2d.stroke();
+    }
+    img.src = URL.createObjectURL(this.files[0]);
+  }
 
-    inputFile = event.target.files[0];
-    context.drawImage(inputFile, 256, 256);
-    context.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
-    context.stroke();
-  };
 </script>
+
+<input type=file id=input> 
+<br>
+<canvas id="cn"/>
 
 <footer>
 Yee!
