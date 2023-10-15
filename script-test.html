@@ -133,7 +133,7 @@ And here, I'll try to put it on a canvas (and draw over it):
         c2d.putImageData(imgData, (i * 25) % canvas.width, Math.floor((i * 25) / canvas.width));
 
         i++;
-        if (i < pixelData.data.length) {
+        if (i * 25 < pixelData.data.length) {
           window.requestAnimationFrame(step); // starts the function again
         }
       }
