@@ -1,14 +1,15 @@
 <!--
 
-HTML, CSS, JS reference:
-http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
+TBD: Create the chaos mask only by parts to save memory
+And: To remove the hang as the page calculates it
 
--->
+TBD: Generally check for duplications and build the site more sensibly, moving utils to a separate file etc.
 
-<!--
+TBD/BUG: This has far inferiour performance compared to R. Things to try:
+- Check that the parity works correctly
+- Check all parameters, particularly the range of the chaotic mask
+- Change the order of the data (R goes channel last, Javascript channel first)
 
-Bug! Running the flipping code twice with different images, 
-the first one somehow continues...
 
 -->
 
@@ -25,63 +26,49 @@ the first one somehow continues...
 
 <header id="site-header"></header> <!-- This gets edited by the script -->
 <script async src="header.js"></script>
- 
 
-Input an image, see it inverted. This is of course not the end of this.
+<p>This does not work very well as of now. I have an implementation in R that mostly works better, and I'm trying to spot the difference in this port.</p>
+<p>In the correct version, the non-chaotic decode works about the same, while the chaotic decode is much better and doesn't produce these weird vertical colorful lines.</p>
+<p>I uploaded this pretty much just for tests of the interface on my phone.</p>
+
+<p>If you want to encode an image, upload it here and save the result.
+<input type=file id="chaosInput"> 
+<canvas id="chaosCanvas" width="0" height="0"></canvas>
+<script src='mask.js'></script>
+</p>
 
 <br>
 
-<input type=file id="canvasInput"> 
-<br>
-<canvas id="cn"></canvas>
+<p>If you want to decode a masked image, upload it here.
+<input type=file id="unmaskInput"> 
+<canvas id="unmaskCanvas" width="0" height="0"></canvas>
 
-<script>
-  var canvas = document.getElementById('cn');
-  var input = document.getElementById('canvasInput');
-  var c2d = canvas.getContext('2d');
+<script src='unmask.js'></script>
+</p>
 
-  input.onchange = function() {
-    speed = 5 // How many rows at a time get uploaded
+<p>If you want to decode a masked image, but don't believe in chaos, upload it here.
+<input type=file id="badInput"> 
+<canvas id="badCanvas" width="0" height="0"></canvas>
+
+<script src='bad.js'></script>
 
 
-    var img = new Image();
-    img.onload = function() {
-      canvas.width = this.width;
-      canvas.height = this.height;
-      c2d.drawImage(this, 0, 0);
-      URL.revokeObjectURL(this.src);
-      c2d.arc(100, 100, 44, 1, 2); // x, y, r, angle1, angle2
-      c2d.stroke();
+</p>
 
-      var pixelData = c2d.getImageData(0, 0, canvas.width, canvas.height)
-
-      console.log(pixelData);
-      
-      var i = 0;
-      function step() {
-        console.log(i);
-        var imgData = c2d.createImageData(canvas.width, speed);
-        for (let j = 0; j < imgData.data.length; j++) {
-          index = i * imgData.data.length + j;
-          if (index % 4 != 3) {
-            imgData.data[j] = 255 - pixelData.data[index];
-          } else {
-            imgData.data[j] = 255;
-          }
-        }
-        c2d.putImageData(imgData, 0, i * speed);
-
-        i++;
-        if (i * canvas.width < pixelData.data.length) {
-          window.requestAnimationFrame(step); // starts the function again
-        }
-      }
-      window.requestAnimationFrame(step);
-    }
-    img.src = URL.createObjectURL(this.files[0]);
-  }
-
-</script>
+<!--
+<p>
+  Notice that if you try inputting the same image multiple times, you get a different result.
+  The mask overlay has a random element to it, and the decoder thus cannot recreate it exactly.
+</p>
+<p>
+  How does this work?
+  The mask comes from a time series of a Lorenz system.
+  The decoder is another Lorenz system set to synchronise with the original one.
+  Of course, the data it gets is a sum of the output of a Lorenz system and data from the image.
+  But the system doesn't understand image data at all, so it just ignores it.
+  This was inspired by work from Steven Strogatz, as explained <a href="https://www.youtube.com/watch?v=FJn9xIW5d20">here</a>.
+</p>
+-->
 
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>

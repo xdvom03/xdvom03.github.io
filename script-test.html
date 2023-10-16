@@ -1,12 +1,5 @@
 <!--
 
-HTML, CSS, JS reference:
-http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
-
--->
-
-<!--
-
 Bug! Running the flipping code twice with different images, 
 the first one somehow continues...
 
@@ -29,7 +22,15 @@ Also, the sanest speedup is probably going by columns
   <header id="site-header"></header> <!-- This gets edited by the script -->
   <script async src="header.js"></script>
 
+<p>
+Select an image and  it will get inverted.
+<input type=file id="inverseInput"> 
+<canvas id="inverseCanvas" width="0" height="0"></canvas>
+<script src='invert.js'></script>
+</p>
+
 <script>
+
 
 let str = '';
 for (let i = 0; i < 4; i++) {
