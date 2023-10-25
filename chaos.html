@@ -27,19 +27,21 @@ TBD/BUG: This has far inferiour performance compared to R. Things to try:
 <header id="site-header"></header> <!-- This gets edited by the script -->
 <script async src="header.js"></script>
 
+<script src='chaosUtil.js'></script>
+
 <p>This does not work very well as of now. I have an implementation in R that mostly works better, and I'm trying to spot the difference in this port.</p>
 <p>In the correct version, the non-chaotic decode works about the same, while the chaotic decode is much better and doesn't produce these weird vertical colorful lines.</p>
 <p>I uploaded this pretty much just for tests of the interface on my phone.</p>
 
 <p>If you want to encode an image, upload it here and save the result.
+<br>
 <input type=file id="chaosInput"> 
 <canvas id="chaosCanvas" width="0" height="0"></canvas>
 <script src='mask.js'></script>
 </p>
 
-<br>
-
 <p>If you want to decode a masked image, upload it here.
+<br>
 <input type=file id="unmaskInput"> 
 <canvas id="unmaskCanvas" width="0" height="0"></canvas>
 
@@ -47,6 +49,7 @@ TBD/BUG: This has far inferiour performance compared to R. Things to try:
 </p>
 
 <p>If you want to decode a masked image, but don't believe in chaos, upload it here.
+<br>
 <input type=file id="badInput"> 
 <canvas id="badCanvas" width="0" height="0"></canvas>
 

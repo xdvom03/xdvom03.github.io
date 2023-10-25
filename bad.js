@@ -40,33 +40,40 @@ badInput.onchange = function() {
     URL.revokeObjectURL(this.src);
 
     var pixelData = badC.getImageData(0, 0, badCanvas.width, badCanvas.height);
-    // the driving data is everything but the visibility
-    drivingData = (removeAlpha(pixelData.data)).map(x => (x - 128) / maskWidthMultiplier);
+    var dataLength = badCanvas.width * badCanvas.height * 4;
+    // That froofaroo at the beginning
+    // is there to convert the uint8bitclampedarray
+    // (from reading an image) into a regular array
+    // This is necessary because the original array type
+    // only admits nonnegative integers!
+    var parsedImage = Array.prototype.slice.call(pixelData.data);
+    // the driving data does not contain the alpha
+    var drivingData = getDrivingData(parsedImage);
     console.log(drivingData);
     var lor = badEuler(badLorentz, badStart, badCanvas.height * badCanvas.width * 4, chaosStep, drivingData); // TBD: Find the right length
     var maskSeries = lor.map((a) => a[0]) // Getting just the X time series
     console.log(maskSeries);
     
-    var i = 0;
-    // since we have to skip the alpha layer,
-    // the indexes in the image and in the mask list
-    // start to diverge. thus, we keep them separately.
-    var counter = 0;
-
-    // TBD: Assert that the image have no alpha layer?
-
-    console.log("The bad script is running!");
+    var i = 0; // counter for pixel blocks updated as a whole
+    maskCounter = 0; // counter for the mask series (since sometimes we skip using it)
     
     function step() {
-      var imgData = badC.createImageData(badCanvas.width, speed);
+    var imgData = badC.createImageData(badCanvas.width, speed);
       for (let j = 0; j < imgData.data.length; j++) {
+        // The order of the current channel
+        // in whatever ordering we're currently using
         index = i * imgData.data.length + j;
-        if (index % 4 != 3) {
-          signal = pixelData.data[index];
-          mask = 128 + maskSeries[counter]*maskWidthMultiplier;
-          parity = (useParity & counter % 2 == 1) ? -1 : 1;
-          imgData.data[j] = Math.floor((signal - mask) / (parity * signalStrength));
-          counter++;
+
+        // The channel index in Javascript's ordering
+        jsIndex = pickChannel(index, dataLength);
+
+        maskIndex = pickChannel(index, dataLength);
+        if (isValidIndex(index)) {
+          signal = parsedImage[jsIndex];
+          mask = 128 + maskSeries[maskCounter] * maskWidthMultiplier;
+          parity = (useParity & maskCounter % 2 == 0) ? -1 : 1;
+          imgData.data[j] = Math.round((signal - mask) / (parity * signalStrength));
+          maskCounter++;
         } else {
           imgData.data[j] = 255;
         }
@@ -78,7 +85,7 @@ badInput.onchange = function() {
         window.requestAnimationFrame(step); // starts the function again
       }
     }
-    window.requestAnimationFrame(step);
+    window.requestAnimationFrame(step); // updates the canvas
   }
   img.src = URL.createObjectURL(this.files[0]);
 }
