@@ -4,6 +4,6 @@ let siteHeader = `
     <nav>
       <a href='index.html'>Index page</a>
     </nav>
-    <br>
+    <hr>
 `;
 document.getElementById("site-header").innerHTML = siteHeader;

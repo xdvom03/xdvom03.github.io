@@ -3,19 +3,19 @@ unmaskStart = [-13, -14, 47]; // initial point for the chaotic mask
 
 var getDrivingData = function(imageData) {
   console.log("BEG drivingData");
+  var rgbData = imageData.filter((value, i) => (isValidIndex(i))); // remove alpha
   // The map just matches array lengths
-  var reorderedData = imageData.map(x => 0);
-  var dataLength = imageData.length;
+  var reorderedData = rgbData.map(x => 0);
+  var dataLength = rgbData.length;
   for (let i = 0; i < dataLength; i++) {
-    jsIndex = pickChannel(i, dataLength);
-    reorderedData[i] = imageData[jsIndex];
+    maskIndex = pickMaskIndex(i, dataLength);
+    reorderedData[maskIndex] = rgbData[i];
   }
-  var rgbData = reorderedData.filter((value, i) => (isValidIndex(i)));
-  var drivingData = rgbData.map(x => (x - 128) / maskWidthMultiplier);
+  var drivingData = reorderedData.map(x => (x - 128) / maskWidthMultiplier);
 
   console.log(imageData);
-  console.log(reorderedData);
   console.log(rgbData);
+  console.log(reorderedData);
   console.log(drivingData);
 
   console.log("END drivingData");
@@ -32,7 +32,7 @@ var unmaskInput = document.getElementById('unmaskInput');
 var unmaskC = unmaskCanvas.getContext('2d');
 
 unmaskInput.onchange = function() {
-  speed = 8 // How many rows at a time get uploaded
+  speed = 16; // How many rows at a time get uploaded
   var img = new Image();
   img.onload = function() {
     unmaskCanvas.width = this.width;
@@ -41,7 +41,7 @@ unmaskInput.onchange = function() {
     URL.revokeObjectURL(this.src);
 
     var pixelData = unmaskC.getImageData(0, 0, unmaskCanvas.width, unmaskCanvas.height);
-    var dataLength = unmaskCanvas.width * unmaskCanvas.height * 4;
+    var dataLength = unmaskCanvas.width * unmaskCanvas.height * 3;
     // That froofaroo at the beginning
     // is there to convert the uint8bitclampedarray
     // (from reading an image) into a regular array
@@ -53,13 +53,13 @@ unmaskInput.onchange = function() {
     //console.log("driving data:");
     //console.log(parsedImage);
     //console.log(drivingData);
-    var lor = decodeEuler(decodeLorentz, unmaskStart, unmaskCanvas.height * unmaskCanvas.width * 4, chaosStep, drivingData);
+    var lor = decodeEuler(decodeLorentz, unmaskStart, unmaskCanvas.height * unmaskCanvas.width * 3, chaosStep, drivingData);
     var maskSeries = lor.map((a) => a[0]) // Getting just the X time series
     console.log(maskSeries);
     
     var i = 0; // counter for pixel blocks updated as a whole
-    maskCounter = 0; // counter for the mask series (since sometimes we skip using it)
-    
+    var RGBIndex = 0;
+
     function step() {
       var imgData = unmaskC.createImageData(unmaskCanvas.width, speed);
       for (let j = 0; j < imgData.data.length; j++) {
@@ -68,15 +68,14 @@ unmaskInput.onchange = function() {
         index = i * imgData.data.length + j;
 
         // The channel index in Javascript's ordering
-        jsIndex = pickChannel(index, dataLength);
+        var maskIndex = pickMaskIndex(RGBIndex, dataLength);
 
-        if (isValidIndex(jsIndex)) {
-          signal = parsedImage[jsIndex];
-          mask = 128 + maskSeries[maskCounter] * maskWidthMultiplier;
-          parity = (useParity & maskCounter % 2 == 0) ? -1 : 1;
+        if (isValidIndex(index)) {
+          signal = parsedImage[index];
+          mask = 128 + maskSeries[maskIndex] * maskWidthMultiplier;
+          parity = (useParity & parityNegative(RGBIndex)) ? -1 : 1;
           imgData.data[j] = Math.round((signal - mask) / (parity * signalStrength));
-          //console.log(Math.floor((signal - mask) / (parity * signalStrength)));
-          maskCounter++;
+          RGBIndex++;
         } else {
           imgData.data[j] = 255;
         }

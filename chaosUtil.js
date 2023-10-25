@@ -1,9 +1,10 @@
 // some parameters
 chaosStep = 0.01; // mask step for Euler method
 debugMode = false; // makes the unmask program recreate the mask exactly
-signalStrength = 0.005; // roughly the signal-to-noise ratio
+signalStrength = 0.01; // roughly the signal-to-noise ratio
 useParity = true;
-maskWidthMultiplier = 5.12; // matches R exactly
+maskWidthMultiplier = 5.12; // matches the R code exactly
+colorfulMask = true;
 
 // We add a tiny bit of randomness to the chaotic mask so that it can't be regenerated as a whole
 // No need to make this big, because the Lorenz system amplifies tiny changes
@@ -11,9 +12,6 @@ randomSize = 0.001;
 if (debugMode) {
   randomSize = 0;
 }
-
-
-
 
 myEuler = function(fun, initial, steps, stepLength) {
   // Euler method for vectors (multiple coordinates; the function calculates the vector of the derivatives)
@@ -72,26 +70,23 @@ decodeLorentz = function(xyz, input_x) {
   return (result);
 }
 
-
-
-pickChannel = function(i, maxIndex) {
-  // given the index as calculated by javascript
-  // (four consecutive datapoints per pixel)
-  // find the index as calculated by R
-  // (first all the red, then all the green...)
-
-  /*
-  var channel = i % 4;
-  var pixel = Math.floor(i / 4);
-  var pixCount = (maxIndex / 4);
-  return (channel * pixCount + pixel);
-  */
-  
-  //return ((i + 4) % maxIndex);
-  return(i);
+pickMaskIndex = function(i, maxIndex) {
+  // INPUT: The index of the RGB channel
+  // OUTPUT: The index of the corresponding mask
+  if (colorfulMask) {
+    var channel = i % 3;
+    var pixel = Math.floor(i / 3);
+    var pixCount = (maxIndex / 3);
+    return (channel * pixCount + pixel);
+  } else {
+    return(i);
+  }
 }
 
 isValidIndex = function(i) {
-  //return(true);
   return(i % 4 != 3);
+}
+
+parityNegative = function(i) {
+  return(i % 2 < 1);
 }

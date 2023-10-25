@@ -4,13 +4,6 @@ TBD: Create the chaos mask only by parts to save memory
 And: To remove the hang as the page calculates it
 
 TBD: Generally check for duplications and build the site more sensibly, moving utils to a separate file etc.
-
-TBD/BUG: This has far inferiour performance compared to R. Things to try:
-- Check that the parity works correctly
-- Check all parameters, particularly the range of the chaotic mask
-- Change the order of the data (R goes channel last, Javascript channel first)
-
-
 -->
 
 <!DOCTYPE html>
@@ -18,7 +11,7 @@ TBD/BUG: This has far inferiour performance compared to R. Things to try:
 
 <head>
 <meta charset="utf-8">
-<title></title>
+<title>Using chaos to send secret messages</title>
 <link href="all.css" rel="stylesheet">
 </head>
 
@@ -29,11 +22,11 @@ TBD/BUG: This has far inferiour performance compared to R. Things to try:
 
 <script src='chaosUtil.js'></script>
 
-<p>This does not work very well as of now. I have an implementation in R that mostly works better, and I'm trying to spot the difference in this port.</p>
-<p>In the correct version, the non-chaotic decode works about the same, while the chaotic decode is much better and doesn't produce these weird vertical colorful lines.</p>
-<p>I uploaded this pretty much just for tests of the interface on my phone.</p>
+<h1>Using chaos to send secret messages</h1>
 
-<p>If you want to encode an image, upload it here and save the result.
+<h2>Try it out here!</h2>
+
+<p>If you want to encode an image, upload it here and save the result. Then, you can send it to somebody and have them decode it!
 <br>
 <input type=file id="chaosInput"> 
 <canvas id="chaosCanvas" width="0" height="0"></canvas>
@@ -44,34 +37,61 @@ TBD/BUG: This has far inferiour performance compared to R. Things to try:
 <br>
 <input type=file id="unmaskInput"> 
 <canvas id="unmaskCanvas" width="0" height="0"></canvas>
-
 <script src='unmask.js'></script>
 </p>
 
-<p>If you want to decode a masked image, but don't believe in chaos, upload it here.
+<p>If you want to decode a masked image, but don't believe in chaos, upload it here. I promise, it won't work as well.
 <br>
 <input type=file id="badInput"> 
 <canvas id="badCanvas" width="0" height="0"></canvas>
-
 <script src='bad.js'></script>
-
-
 </p>
 
-<!--
+<h2>How does this work?</h2>
 <p>
-  Notice that if you try inputting the same image multiple times, you get a different result.
-  The mask overlay has a random element to it, and the decoder thus cannot recreate it exactly.
+  Notice that if you try encoding the same image multiple times, the result changes.
+  The mask overlay has a random element to it, so the decoder is clearly not just recreating the mask exactly.
 </p>
 <p>
-  How does this work?
+  So, how <i>does</i> this work?
   The mask comes from a time series of a Lorenz system.
   The decoder is another Lorenz system set to synchronise with the original one.
-  Of course, the data it gets is a sum of the output of a Lorenz system and data from the image.
-  But the system doesn't understand image data at all, so it just ignores it.
+  The decoder tries to recreate the mask, then subtracts its reconstruction.
+  Of course, it isn't a perfect reconstruction. 
+  The data it is based on is a sum of chaotic data and image data.
+  The theory is that the chaotic system doesn't understand image data at all, so it just ignores it, and only reconstructs the chaotic part.
   This was inspired by work from Steven Strogatz, as explained <a href="https://www.youtube.com/watch?v=FJn9xIW5d20">here</a>.
 </p>
--->
+<p>
+  There are two big problems with this scheme.
+  Strogatz originally used it on sound, and he (well, his student Kevin Cuomo) built the Lorenz system as an analog circuit.
+  I tried the scheme with image data and, at first, failed utterly.
+  The problem is that image data is purely positive (there can't be negative brightness), while sound is an oscillation.
+  It turns out that the Lorenz system receiver can pick up a shift much better than oscillations.
+  I solved this by multiplying the image data with a parity bit: alternating plus or minus one.
+</p>
+<h2>So, is this useful at all?</h2>
+<p>
+  Probably not for sending actual secrets, especially because you can't easily give this system a key as a parameter, so anybody can decode your image on this site.
+  (There might be a way, though...)
+  Instead, this is a demonstration of a kind of signal processing.
+  With ordinary periodic signals, it's easy to build a device that picks out a particular frequency and ignores everythng else: that's how radios work.
+  Maybe there is some way to encode information into the chaotic mask.
+  Then, this mask can be synchronised with. 
+</p>
+<p>
+  Already in this demonstration, I fiddle with the mask a little bit, changing it by a tiny random factor to make it unique each time.
+  It is known that chaotic systems can be stabilised to periodic orbits with the smallest nudges, if applied at the right time in the right way.
+  Perhaps you could also encode zeros and ones somewhere in the number of orbit the system makes on either side before flipping.
+</p>
+<p>
+  And why would you want to do <i>that</i>?
+  Maybe (I haven't tested this) such a system would be more resistant to periodic noises.
+  Maybe (I haven't tested this) you could run multiple chaotic systems at once, with different parameters, and they would not interact.
+  I doubt it, though.
+  I haven't yet had a problem that could be solved with this, but perhaps one day I will, and then I'll try this.
+  Till then, have this toy!
+</p>
 
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>

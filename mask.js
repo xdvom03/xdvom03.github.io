@@ -7,7 +7,7 @@ var chaosInput = document.getElementById('chaosInput');
 var chaosC = chaosCanvas.getContext('2d');
 
 chaosInput.onchange = function() {
-  speed = 8 // How many rows at a time get uploaded
+  speed = 16; // How many rows at a time get uploaded
   var img = new Image();
   img.onload = function() {
     chaosCanvas.width = this.width;
@@ -17,15 +17,15 @@ chaosInput.onchange = function() {
 
     var pixelData = chaosC.getImageData(0, 0, chaosCanvas.width, chaosCanvas.height);
     
-    var dataLength = chaosCanvas.width * chaosCanvas.height * 4;
+    var dataLength = chaosCanvas.width * chaosCanvas.height * 3;
     var parsedImage = pixelData.data;
-    var lor = myEuler(myLorentz, chaosStart, chaosCanvas.height * chaosCanvas.width * 4, chaosStep);
+    var lor = myEuler(myLorentz, chaosStart, chaosCanvas.height * chaosCanvas.width * 3, chaosStep);
     var maskSeries = lor.map((a) => a[0]); // Just the X time series
     console.log(maskSeries);
     
     var i = 0; // counter for pixel blocks updated as a whole
-    maskCounter = 0; // counter for the mask series (since sometimes we skip using it)
-    
+    var RGBIndex = 0;
+
     function step() {
       var imgData = chaosC.createImageData(chaosCanvas.width, speed);
       for (let j = 0; j < imgData.data.length; j++) {
@@ -34,14 +34,14 @@ chaosInput.onchange = function() {
         index = i * imgData.data.length + j;
 
         // The channel index in Javascript's ordering
-        jsIndex = pickChannel(index, dataLength);
+        var maskIndex = pickMaskIndex(RGBIndex, dataLength);
 
-        if (isValidIndex(jsIndex)) {
-          signal = parsedImage[jsIndex];
-          mask = 128 + maskSeries[maskCounter] * maskWidthMultiplier;
-          parity = (useParity & maskCounter % 2 == 0) ? -1 : 1;
+        if (isValidIndex(index)) {
+          signal = parsedImage[index];
+          mask = 128 + maskSeries[maskIndex] * maskWidthMultiplier;
+          parity = (useParity & parityNegative(RGBIndex)) ? -1 : 1;
           imgData.data[j] = Math.round(mask + (signal * signalStrength * parity));
-          maskCounter++;
+          RGBIndex++;
         } else {
           imgData.data[j] = 255;
         }
@@ -57,3 +57,4 @@ chaosInput.onchange = function() {
   }
   img.src = URL.createObjectURL(this.files[0]);
 }
+

@@ -1,7 +1,13 @@
-body { background: #abc; text-align: center }
+body { 
+  background: #abc;
+  text-align: justify;
+  margin-left: 5%;
+  margin-right: 20%;
+}
+
 div, p, header, footer {
-    font-family: "Times New Roman", serif;
-    color: #036;
+  font-family: "Times New Roman", serif;
+  color: #036;
 }
 
 a {

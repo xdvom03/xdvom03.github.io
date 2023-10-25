@@ -31,7 +31,7 @@ var badInput = document.getElementById('badInput');
 var badC = badCanvas.getContext('2d');
 
 badInput.onchange = function() {
-  speed = 10 // How many rows at a time get uploaded
+  speed = 16; // How many rows at a time get uploaded
   var img = new Image();
   img.onload = function() {
     badCanvas.width = this.width;
@@ -40,7 +40,7 @@ badInput.onchange = function() {
     URL.revokeObjectURL(this.src);
 
     var pixelData = badC.getImageData(0, 0, badCanvas.width, badCanvas.height);
-    var dataLength = badCanvas.width * badCanvas.height * 4;
+    var dataLength = badCanvas.width * badCanvas.height * 3;
     // That froofaroo at the beginning
     // is there to convert the uint8bitclampedarray
     // (from reading an image) into a regular array
@@ -50,12 +50,12 @@ badInput.onchange = function() {
     // the driving data does not contain the alpha
     var drivingData = getDrivingData(parsedImage);
     console.log(drivingData);
-    var lor = badEuler(badLorentz, badStart, badCanvas.height * badCanvas.width * 4, chaosStep, drivingData); // TBD: Find the right length
+    var lor = badEuler(badLorentz, badStart, badCanvas.height * badCanvas.width * 3, chaosStep, drivingData); // TBD: Find the right length
     var maskSeries = lor.map((a) => a[0]) // Getting just the X time series
     console.log(maskSeries);
     
     var i = 0; // counter for pixel blocks updated as a whole
-    maskCounter = 0; // counter for the mask series (since sometimes we skip using it)
+    var RGBIndex = 0;
     
     function step() {
     var imgData = badC.createImageData(badCanvas.width, speed);
@@ -65,15 +65,13 @@ badInput.onchange = function() {
         index = i * imgData.data.length + j;
 
         // The channel index in Javascript's ordering
-        jsIndex = pickChannel(index, dataLength);
-
-        maskIndex = pickChannel(index, dataLength);
+        var maskIndex = pickMaskIndex(RGBIndex, dataLength);
         if (isValidIndex(index)) {
-          signal = parsedImage[jsIndex];
-          mask = 128 + maskSeries[maskCounter] * maskWidthMultiplier;
-          parity = (useParity & maskCounter % 2 == 0) ? -1 : 1;
+          signal = parsedImage[index];
+          mask = 128 + maskSeries[maskIndex] * maskWidthMultiplier;
+          parity = (useParity & parityNegative(RGBIndex)) ? -1 : 1;
           imgData.data[j] = Math.round((signal - mask) / (parity * signalStrength));
-          maskCounter++;
+          RGBIndex++;
         } else {
           imgData.data[j] = 255;
         }

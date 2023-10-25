@@ -1,5 +1,5 @@
 let siteFooter = `
-    <br>
+    <hr>
     Bye!
 `;
 document.getElementById("site-footer").innerHTML = siteFooter;
