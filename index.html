@@ -24,10 +24,10 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <div>There are worse things to be doing.</div>
 <br>
 <br>
-<div>Under construction. Last worked on 19.11.2023. Probably abandoned if you're seeing this here in 2024 or later...</div>
+<div>Under construction. Last worked on 19.11.2023. Probably abandoned if you're seeing this here in 2024 or later.</div>
 <br>
 
-<a href='script-test.html'>Testing scripts</a>
+<a href='script-test.html'>Testing area</a>
 <br>
 <a href='chaos.html'>Chaotic image masking</a>
 <br>
@@ -38,6 +38,12 @@ http://www.nematrian.com/Pages/HTMLCSSJSCombined.pdf
 <a href='404.html'>The error page (WHY would you care?)</a>
 <br>
 
+<a href="https://en.wikipedia.org" id="trapLink" onclick="snapTrap()">This link is a trap!</a>
+  <script>
+    function snapTrap() {
+      document.getElementById("trapLink").href = "trap-landing.html";
+    }
+  </script>
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>
 

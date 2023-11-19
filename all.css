@@ -5,7 +5,7 @@ body {
   margin-right: 10%;
 }
 
-div, p, header, footer, label {
+div, p, header, footer, label, a {
   font-family: "Times New Roman", serif;
   color: #036;
   font-size: 18px;
@@ -17,7 +17,7 @@ a {
 
 a:link { color: #084 }
 a:visited { color: #060 }
-a:hover { color: #09e }
+a:hover { color: #04a }
 a:active { color: #000 }
 
 .wide-slider
