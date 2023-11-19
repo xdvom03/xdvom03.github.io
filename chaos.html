@@ -1,17 +1,11 @@
 <!--
-These are just possible improvements. I currently have no plan to implement them.
-
-TBD: Explain the nonchaotic decoder.
-
 TBD: Test out the oscillation scales at which this system starts to break down.
 
 TBD: Test out, elsewhere, and with a different visualisation, the multiple chaotic systems talking past each other. (I suspect it will fail)
 
 TBD: Move the canvas output to an image to make this work on mobile.
 
-BUG: The randomness setting is global, but that means either the image part or the graphs become broken!
-
-TBD: Allow to copy the image from above to decoding
+TBD:  Provide some loading bar for making the time series.
 -->
 
 <!DOCTYPE html>
@@ -42,9 +36,11 @@ TBD: Allow to copy the image from above to decoding
     <br>
     <input type=file id="chaosInput" align="center"> 
     <br>
-    <canvas id="chaosCanvas" width="0" height="0"></canvas>
     <button id="chaosButton" onclick="maskInput()">Regenerate mask</button>
-    <button id="exampleButton" onclick="updateMask('bifurc1.png')">Use an example (possibly tainted/broken?)</button>
+    <br>
+    <button id="exampleButton" onclick="updateMask('example.png')">Use an example image</button>
+    <br>
+    <canvas id="chaosCanvas" width="0" height="0"></canvas>
     <script src='mask.js'></script>
   </div>
 
@@ -53,8 +49,11 @@ TBD: Allow to copy the image from above to decoding
     <br>
     <input type=file id="unmaskInput" align="center"> 
     <br>
-    <canvas id="unmaskCanvas" width="0" height="0"></canvas>
     <button id="unmaskButton" onclick="updateUnmask(document.getElementById('chaosCanvas').toDataURL())">Steal from the left</button>
+    <br>
+    <button style="visibility: hidden"></button>
+    <br>
+    <canvas id="unmaskCanvas" width="0" height="0"></canvas>
     <script src='unmask.js'></script>
   </div>
 
@@ -64,10 +63,10 @@ TBD: Allow to copy the image from above to decoding
 
 <p>
   This demonstration uses results from chaos theory to mask and unmask a signal.
-  I assume no prior understanding of chaos, but if you already know what an attractor is, you can hide that part of the explanation.
+  <!-- I assume no prior understanding of chaos, but if you don't care for the internals, you can hide that part of the explanation. -->
 </p>
 
-
+<!--
 <input type="checkbox" id="intro" onclick="toggleIntro()" checked>
 <label for="toggleIntro">Show introduction to chaos</labek>
 <script>
@@ -77,9 +76,7 @@ TBD: Allow to copy the image from above to decoding
     }
   }
 </script>
-
-
-
+-->
 
 <h1>Why is this interesting?</h1>
 <p>
@@ -88,7 +85,6 @@ TBD: Allow to copy the image from above to decoding
   It only uses the image itself to decode.
   You can test that out by sending an encoded image to a friend and directing them to this site to decode it.
 </p>
-
 
 <h1>How does this work?</h1>
 <p>
@@ -125,7 +121,7 @@ TBD: Allow to copy the image from above to decoding
     </p>
 
 
-    <video src="lorenzVid.mp4" controls width="770" height="632">
+    <video src="lorenz_chaos.mp4" controls width="770" height="632">
     Video loading...
     </video>
 
@@ -185,40 +181,29 @@ TBD: Allow to copy the image from above to decoding
   Maybe you are unconvinced.
   The mask has horizontal stripes, so maybe it just changes too slowly and all that happens is that the reconstruction finds the rapidly oscilating part of the signal.
   This box tests exactly that.
-
-  <div class="box">
-    <h2 align="center">Decode an image without chaos</h3>
-    <br>
-    <input type=file id="badInput" align="center"> 
-    <br>
-    <canvas id="badCanvas" width="0" height="0"></canvas>
-    <button id="badButton" onclick="updateBad(document.getElementById('chaosCanvas').toDataURL())">Steal from above</button>
-    <script src='bad.js'></script>
-  </div>
-
-  I hope this convinces you that the chaotic decoder does do nontrivial work.
-  There is a way to show it better:
-  <!--
-
-    TBD: Go through the graph, consider what you want to show, redo it to look reasonable. Remove all GPT nonsense.
-
-  -->
 </p>
+  
+<div class="box">
+  <h2 align="center">Decode an image without chaos</h3>
+  <br>
+  <button id="badButton" onclick="updateBad(document.getElementById('chaosCanvas').toDataURL())">Steal from above</button>
+  <br>
+  <input type=file id="badInput" align="center"> 
+  <br>
+  <canvas id="badCanvas" width="0" height="0"></canvas>
+  <script src='bad.js'></script>
+</div>
 
-
-
-
-
-
-
-
+<p>
+  I hope this convinces you that the chaotic decoder does do nontrivial work.
+</p>
 
 <h2>So, is this useful at all?</h2>
 <p>
   Probably not for sending actual secrets, especially because you can't easily give this system a key as a parameter, so anybody can decode your image on this site.
-  (you could change the parameters, but that's just three numbers and thus brute-force-able)
+  You could change the parameters, but that's just three numbers and thus easy to brute-force.
   Instead, this is a demonstration of a kind of signal processing.
-  With ordinary periodic signals, it's easy to build a device that picks out a particular frequency and ignores everythng else: that's how radios work.
+  With ordinary periodic signals, it's easy to build a device that picks out a particular frequency and ignores everything else: that's how radios work.
   Maybe there is some way to encode information into the chaotic mask.
   Then, this mask can be synchronised with.
   The image is just an elaborate way to show that noise in the environment won't get picked up on.
@@ -232,21 +217,14 @@ TBD: Allow to copy the image from above to decoding
   And why would you want to do <i>that</i>?
   I am not sure.
   But there might be a situation in which you have to send a signal that isn't periodic.
-  Perhaps you could use it to see which frequencies get attenuated. <!-- Of course, this is only useful if for whatever reason you can't just remember what you sent in... -->
   The Lorenz system is very much not periodic: its spectrum looks like white noise.
   <!-- That could also use a demonstration -->
-
-
-
-
-  Maybe (I haven't tested this) such a system would be more resistant to periodic noises.
-  Maybe (I haven't tested this) you could run multiple chaotic systems at once, with different parameters, and they would not interact.
-  I doubt it, though.
-  I haven't yet had a problem that could be solved with this, but perhaps one day I will, and then I'll try this.
-  Till then, have this toy!
 </p>
-
-
+<p>
+  But in the end, I don't view this as a tool for a use case.
+  Perhaps one day, somebody might have a problem this could solve.
+  Until then, it's just curious how well it works.
+</p>
 
 
 

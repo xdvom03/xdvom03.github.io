@@ -2,12 +2,12 @@
 chaosStep = 0.02; // mask step for Euler method
 debugMode = false; // makes the unmask program recreate the mask exactly (needs random off)
 useRandom = true;
-signalStrength = 0.02; // roughly the signal-to-noise ratio
+signalStrength = 0.025; // roughly the signal-to-noise ratio
 useParity = true;
 maskWidthMultiplier = 5.12; // TBD: Experiment with this
 colorfulMask = true;
-parityLength = 2;
-negativeLength = 1;
+parityLength = 6;
+negativeLength = 3;
 speed = 16; // rows per second in all image edits
 
 // We add a tiny bit of randomness to the chaotic mask so that it can't be regenerated as a whole
