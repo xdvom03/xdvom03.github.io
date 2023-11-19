@@ -9,6 +9,7 @@ colorfulMask = true;
 parityLength = 6;
 negativeLength = 3;
 speed = 16; // rows per second in all image edits
+isDefaultImage = false; // so that we know what to regenerate
 
 // We add a tiny bit of randomness to the chaotic mask so that it can't be regenerated as a whole
 // No need to make this big, because the Lorenz system amplifies tiny changes

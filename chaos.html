@@ -36,9 +36,9 @@ TBD:  Provide some loading bar for making the time series.
     <br>
     <input type=file id="chaosInput" align="center"> 
     <br>
-    <button id="chaosButton" onclick="maskInput()">Regenerate mask</button>
+    <button id="chaosButton" onclick="if (isDefaultImage) updateMask('example.png'); else maskInput()">Regenerate mask</button>
     <br>
-    <button id="exampleButton" onclick="updateMask('example.png')">Use an example image</button>
+    <button id="exampleButton" onclick="isDefaultImage = true; updateMask('example.png')">Use an example image</button>
     <br>
     <canvas id="chaosCanvas" width="0" height="0"></canvas>
     <script src='mask.js'></script>

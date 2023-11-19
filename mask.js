@@ -59,6 +59,7 @@ function updateMask(imageSource) {
 }
 
 function maskInput () {
+  isDefaultImage = false;
   updateMask(URL.createObjectURL(chaosInput.files[0]));
 }
 
