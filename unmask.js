@@ -1,7 +1,7 @@
 // some parameters
 unmaskStart = [-13, -14, 47]; // initial point for the chaotic mask
 
-var getDrivingData = function(imageData) {
+function getDrivingData(imageData) {
   console.log("BEG drivingData");
   var rgbData = imageData.filter((value, i) => (isValidIndex(i))); // remove alpha
   // The map just matches array lengths
@@ -31,8 +31,7 @@ var unmaskCanvas = document.getElementById('unmaskCanvas');
 var unmaskInput = document.getElementById('unmaskInput');
 var unmaskC = unmaskCanvas.getContext('2d');
 
-unmaskInput.onchange = function() {
-  speed = 16; // How many rows at a time get uploaded
+function updateUnmask(imageSource) {
   var img = new Image();
   img.onload = function() {
     unmaskCanvas.width = this.width;
@@ -89,5 +88,9 @@ unmaskInput.onchange = function() {
     }
     window.requestAnimationFrame(step); // updates the canvas
   }
-  img.src = URL.createObjectURL(this.files[0]);
+  img.src = imageSource;
+}
+
+unmaskInput.onchange = function() {
+  updateUnmask(URL.createObjectURL(this.files[0]));
 }

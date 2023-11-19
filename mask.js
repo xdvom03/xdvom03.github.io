@@ -6,8 +6,7 @@ var chaosCanvas = document.getElementById('chaosCanvas');
 var chaosInput = document.getElementById('chaosInput');
 var chaosC = chaosCanvas.getContext('2d');
 
-chaosInput.onchange = function() {
-  speed = 16; // How many rows at a time get uploaded
+function updateMask(imageSource) {
   var img = new Image();
   img.onload = function() {
     chaosCanvas.width = this.width;
@@ -55,6 +54,12 @@ chaosInput.onchange = function() {
     }
     window.requestAnimationFrame(step); // updates the canvas
   }
-  img.src = URL.createObjectURL(this.files[0]);
+  console.log(imageSource);
+  img.src = imageSource;
 }
 
+function maskInput () {
+  updateMask(URL.createObjectURL(chaosInput.files[0]));
+}
+
+chaosInput.onchange = maskInput;

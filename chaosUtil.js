@@ -1,15 +1,19 @@
 // some parameters
-chaosStep = 0.01; // mask step for Euler method
-debugMode = false; // makes the unmask program recreate the mask exactly
-signalStrength = 0.01; // roughly the signal-to-noise ratio
+chaosStep = 0.02; // mask step for Euler method
+debugMode = false; // makes the unmask program recreate the mask exactly (needs random off)
+useRandom = true;
+signalStrength = 0.02; // roughly the signal-to-noise ratio
 useParity = true;
-maskWidthMultiplier = 5.12; // matches the R code exactly
+maskWidthMultiplier = 5.12; // TBD: Experiment with this
 colorfulMask = true;
+parityLength = 2;
+negativeLength = 1;
+speed = 16; // rows per second in all image edits
 
 // We add a tiny bit of randomness to the chaotic mask so that it can't be regenerated as a whole
 // No need to make this big, because the Lorenz system amplifies tiny changes
 randomSize = 0.001; 
-if (debugMode) {
+if (!useRandom) {
   randomSize = 0;
 }
 
@@ -88,5 +92,5 @@ isValidIndex = function(i) {
 }
 
 parityNegative = function(i) {
-  return(i % 2 < 1);
+  return(i % parityLength < negativeLength);
 }

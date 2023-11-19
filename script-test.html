@@ -22,6 +22,9 @@ Also, the sanest speedup is probably going by columns
   <header id="site-header"></header> <!-- This gets edited by the script -->
   <script async src="header.js"></script>
 
+
+  <button id="yee" name="yaa" onclick="console.log('Boo!')">Wow! Stuff on a button! (there can be an entire site here...)</button>
+
 <p>
 Select an image and  it will get inverted.
 <input type=file id="inverseInput"> 
@@ -149,6 +152,21 @@ And here, I'll try to put it on a canvas (and draw over it):
 </script>
 
 And then something else?
+
+<a href="https://en.wikipedia.org" id="trapLink" onclick="snapTrap()">This link is a trap!</labek>
+<script>
+  function snapTrap() {
+    document.getElementById("trapLink").href = "trap-landing.html";
+  }
+</script>
+
+
+<a href="#footnote-1-10203" id="note-1-10203" rel="footnote">1</a>
+
+
+<li id="footnote-1-10203" class="footnote"><p>Footnote!<a href="#note-1-10203" class="footnote-return">&#8617;</a></p></li>
+
+
 
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>

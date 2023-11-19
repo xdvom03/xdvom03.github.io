@@ -16,10 +16,12 @@ badEuler = function(fun, initial, steps, stepLength, drivingData) {
 
 badLorentz = function(drivingData, step) {
   maskEstimate = 0;
-  if (step == 1) {
-    maskEstimate = (drivingData[[step]] + drivingData[[step + 1]]) / 2;
+  if (step < parityLength) {
+    maskEstimate = drivingData.slice(step, step + parityLength).reduce((a,b)=>a+b) / parityLength;
+    //maskEstimate = (drivingData[[step]] + drivingData[[step + 1]]) / 2;
   } else {
-    maskEstimate = (drivingData[[step]] + drivingData[[step - 1]]) / 2;
+    maskEstimate = drivingData.slice(step - parityLength, step).reduce((a,b)=>a+b) / parityLength;
+    //maskEstimate = (drivingData[[step]] + drivingData[[step - 1]]) / 2;
   }
   result = [maskEstimate, 0, 0];
   return (result);
@@ -30,8 +32,7 @@ var badCanvas = document.getElementById('badCanvas');
 var badInput = document.getElementById('badInput');
 var badC = badCanvas.getContext('2d');
 
-badInput.onchange = function() {
-  speed = 16; // How many rows at a time get uploaded
+function updateBad(imageSource) {
   var img = new Image();
   img.onload = function() {
     badCanvas.width = this.width;
@@ -85,5 +86,9 @@ badInput.onchange = function() {
     }
     window.requestAnimationFrame(step); // updates the canvas
   }
-  img.src = URL.createObjectURL(this.files[0]);
+  img.src = imageSource;
+}
+
+badInput.onchange = function() {
+  updateBad(URL.createObjectURL(this.files[0]));
 }

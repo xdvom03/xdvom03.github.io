@@ -6,6 +6,12 @@ TBD: Explain the nonchaotic decoder.
 TBD: Test out the oscillation scales at which this system starts to break down.
 
 TBD: Test out, elsewhere, and with a different visualisation, the multiple chaotic systems talking past each other. (I suspect it will fail)
+
+TBD: Move the canvas output to an image to make this work on mobile.
+
+BUG: The randomness setting is global, but that means either the image part or the graphs become broken!
+
+TBD: Allow to copy the image from above to decoding
 -->
 
 <!DOCTYPE html>
@@ -24,62 +30,198 @@ TBD: Test out, elsewhere, and with a different visualisation, the multiple chaot
 
 <script src='chaosUtil.js'></script>
 
+
 <h1>Using chaos to send secret messages</h1>
 
 <h2>Try it out here!</h2>
 
-<p>If you want to encode an image, upload it here and save the result. Then, you can send it to somebody and have them decode it!
-<br>
-<input type=file id="chaosInput"> 
-<canvas id="chaosCanvas" width="0" height="0"></canvas>
-<script src='mask.js'></script>
-</p>
+<div class='parent inline-flex-parent'>
 
-<p>If you want to decode a masked image, upload it here.
-<br>
-<input type=file id="unmaskInput"> 
-<canvas id="unmaskCanvas" width="0" height="0"></canvas>
-<script src='unmask.js'></script>
-</p>
+  <div class="box">
+    <h2 align="center">Encode an image</h3>
+    <br>
+    <input type=file id="chaosInput" align="center"> 
+    <br>
+    <canvas id="chaosCanvas" width="0" height="0"></canvas>
+    <button id="chaosButton" onclick="maskInput()">Regenerate mask</button>
+    <button id="exampleButton" onclick="updateMask('bifurc1.png')">Use an example (possibly tainted/broken?)</button>
+    <script src='mask.js'></script>
+  </div>
 
-<p>If you want to decode a masked image, but don't believe in chaos, upload it here. I promise, it won't work as well.
-<br>
-<input type=file id="badInput"> 
-<canvas id="badCanvas" width="0" height="0"></canvas>
-<script src='bad.js'></script>
-</p>
+  <div class="box">
+    <h2 align="center">Decode a masked image</h3>
+    <br>
+    <input type=file id="unmaskInput" align="center"> 
+    <br>
+    <canvas id="unmaskCanvas" width="0" height="0"></canvas>
+    <button id="unmaskButton" onclick="updateUnmask(document.getElementById('chaosCanvas').toDataURL())">Steal from the left</button>
+    <script src='unmask.js'></script>
+  </div>
 
-<h2>How does this work?</h2>
+</div>
+
+<h2>What is this?</h2>
+
 <p>
-  Notice that if you try encoding the same image multiple times, the result changes.
-  The mask overlay has a random element to it, so the decoder is clearly not just recreating the mask exactly.
+  This demonstration uses results from chaos theory to mask and unmask a signal.
+  I assume no prior understanding of chaos, but if you already know what an attractor is, you can hide that part of the explanation.
 </p>
+
+
+<input type="checkbox" id="intro" onclick="toggleIntro()" checked>
+<label for="toggleIntro">Show introduction to chaos</labek>
+<script>
+  function toggleIntro() {
+    for (const element of document.getElementsByClassName("intro")) {
+      element.style.display = document.getElementById("intro").checked ? "" : "none";
+    }
+  }
+</script>
+
+
+
+
+<h1>Why is this interesting?</h1>
 <p>
-  So, how <i>does</i> this work?
-  The mask comes from a time series of a Lorenz system.
-  The decoder is another Lorenz system set to synchronise with the original one.
-  The decoder tries to recreate the mask, then subtracts its reconstruction.
-  Of course, it isn't a perfect reconstruction. 
-  The data it is based on is a sum of chaotic data and image data.
-  The theory is that the chaotic system doesn't understand image data at all, so it just ignores it, and only reconstructs the chaotic part.
-  This was inspired by work from Steven Strogatz, as explained <a href="https://www.youtube.com/watch?v=FJn9xIW5d20">here</a>.
+  It's a little hard to see because of the randomness, but the mask is actually entirely different each time you regenerate it, and yet each time the decoder can pick it out and remove it.
+  The decoder doesn't know the mask in advance!
+  It only uses the image itself to decode.
+  You can test that out by sending an encoded image to a friend and directing them to this site to decode it.
+</p>
+
+
+<h1>How does this work?</h1>
+<p>
+  <p>
+    This was inspired by work from Steven Strogatz (more precisely, his student Kevin Cuomo), as explained <a href="https://www.youtube.com/watch?v=FJn9xIW5d20">here</a>.
+  </p>
+  
+  <p>
+    First, the image is understood as a list of numbers 0-255 by looping through all its pixels' RGB channels.
+    The encoder overlays a mask on the image.
+    The mask comes from the time series of a Lorenz system.
+  </p>
+  
+  <div class="intro">
+    <h2>The Lorenz system</h2>
+    <p>
+      The Lorenz system is a set of three differential equations:
+    </p>
+    <img src = "latex/xEq.png"> <br>
+    <img src = "latex/yEq.png"> <br>
+    <img src = "latex/zEq.png">
+    <p>
+      It was originally intended to be a simple model of atmospheric convection, but you can think of it as a particle in 3D space moving along a certain flow.
+      The dynamical variables are <i>x</i>, <i>y</i>, and <i>z</i>, while <i>σ</i>, <i>ρ</i>, and <i>β</i> are parameters that can be tuned to change the behaviour of the system.
+      The mask that actually gets overlaid over the image is the time series of the <i>x</i> variable, while <i>y</i> and <i>z</i> are ignored.
+      This system has the curious property that from any possible starting point, it settles into a strange kind of regular-irregular motion (<a href="https://commons.wikimedia.org/wiki/File:A_Trajectory_Through_Phase_Space_in_a_Lorenz_Attractor.gif">image source</a>):
+    </p>
+      
+    <img src="lorenz.gif">
+
+    <p>
+      In the long term, the motion is chaotic: there's basically no connection between where the system was a long time ago and where it is now.
+      In fact, if you start multiple such systems really close together, over time, they diverge (<a href="https://commons.wikimedia.org/wiki/File:Lorenz_chaos_1.ogv">video source</a>):
+    </p>
+
+
+    <video src="lorenzVid.mp4" controls width="770" height="632">
+    Video loading...
+    </video>
+
+    <p>
+      I also add a tiny random shift to <i>z</i> each step that ensures the mask is different each time.
+      The shift is absolutely minuscule, just a millionth of the typical value, but the system naturally amplifies any changes.
+    </p>
+
+    <h2>Synchro stuff</h2>
+    <p>
+      But if the system's evolution cannot be predicted, then how can the decoder recreate the mask?
+      The key here is <i>chaotic synchronisation</i>.
+      The idea is that you run a Lorenz system, but replace some of the input in its differential equations with data that came from a previous run.
+      It only needs data for one of the variables, <i>x</i>.
+      The new equations are these, with the tilde meaning that the variable value is taken from the driving data, not the system's own data:
+    </p>
+    
+    <img src = "latex/xEq.png"> <br>
+    <img src = "latex/ySynchro.png"> <br>
+    <img src = "latex/zSynchro.png">
+    
+    <p>
+      If you do this, you find that the system recreates the entire original run exactly.
+      Now, if you feed it the correct data it expects, plus some other data, the idea is that because the other data is not chaotic, the system cannot reproduce it, so it just ignores it.
+    </p>
+
+  </div>
+
+  <p>
+    The decoder gets the signal and the mask together and has to get only the signal out.
+    It does that by recreating the mask and subtracting it.
+    The full idea is this: 
+  </p>
+  
+  <p>
+    Mask: <span style="color: #02d;">image data</span> + <span style="color: #840;">mask data</span> = <span style="color: #808;">driving data</span>
+    <br>
+    Filter: <span style="color: #808;">driving data</span> &#8594; <span style="color: #840;">reconstructed mask data</span>
+    <br>
+    Unmask: <span style="color: #808;">driving data</span> - <span style="color: #840;">reconstructed mask data</span> = <span style="color: #02d;">reconstructed image data</span>
+  </p>
+  This process crucially depends on the filter working, that is, the reconstruction rejecting image data.
 </p>
 <p>
   There are two big problems with this scheme.
-  Strogatz originally used it on sound, and he (well, his student Kevin Cuomo) built the Lorenz system as an analog circuit.
+  Strogatz originally used it on sound, and he built the Lorenz system as an analog circuit.
   I tried the scheme with image data and, at first, failed utterly.
   The problem is that image data is purely positive (there can't be negative brightness), while sound is an oscillation.
   It turns out that the Lorenz system receiver can pick up a shift much better than oscillations.
   I solved this by multiplying the image data with a parity bit: alternating plus or minus one.
 </p>
+
+
+<h2>How <u>well</u> does this work?</h2>
+
+<p>
+  Maybe you are unconvinced.
+  The mask has horizontal stripes, so maybe it just changes too slowly and all that happens is that the reconstruction finds the rapidly oscilating part of the signal.
+  This box tests exactly that.
+
+  <div class="box">
+    <h2 align="center">Decode an image without chaos</h3>
+    <br>
+    <input type=file id="badInput" align="center"> 
+    <br>
+    <canvas id="badCanvas" width="0" height="0"></canvas>
+    <button id="badButton" onclick="updateBad(document.getElementById('chaosCanvas').toDataURL())">Steal from above</button>
+    <script src='bad.js'></script>
+  </div>
+
+  I hope this convinces you that the chaotic decoder does do nontrivial work.
+  There is a way to show it better:
+  <!--
+
+    TBD: Go through the graph, consider what you want to show, redo it to look reasonable. Remove all GPT nonsense.
+
+  -->
+</p>
+
+
+
+
+
+
+
+
+
 <h2>So, is this useful at all?</h2>
 <p>
   Probably not for sending actual secrets, especially because you can't easily give this system a key as a parameter, so anybody can decode your image on this site.
-  (There might be a way, though...)
+  (you could change the parameters, but that's just three numbers and thus brute-force-able)
   Instead, this is a demonstration of a kind of signal processing.
   With ordinary periodic signals, it's easy to build a device that picks out a particular frequency and ignores everythng else: that's how radios work.
   Maybe there is some way to encode information into the chaotic mask.
-  Then, this mask can be synchronised with. 
+  Then, this mask can be synchronised with.
+  The image is just an elaborate way to show that noise in the environment won't get picked up on.
 </p>
 <p>
   Already in this demonstration, I fiddle with the mask a little bit, changing it by a tiny random factor to make it unique each time.
@@ -88,12 +230,31 @@ TBD: Test out, elsewhere, and with a different visualisation, the multiple chaot
 </p>
 <p>
   And why would you want to do <i>that</i>?
+  I am not sure.
+  But there might be a situation in which you have to send a signal that isn't periodic.
+  Perhaps you could use it to see which frequencies get attenuated. <!-- Of course, this is only useful if for whatever reason you can't just remember what you sent in... -->
+  The Lorenz system is very much not periodic: its spectrum looks like white noise.
+  <!-- That could also use a demonstration -->
+
+
+
+
   Maybe (I haven't tested this) such a system would be more resistant to periodic noises.
   Maybe (I haven't tested this) you could run multiple chaotic systems at once, with different parameters, and they would not interact.
   I doubt it, though.
   I haven't yet had a problem that could be solved with this, but perhaps one day I will, and then I'll try this.
   Till then, have this toy!
 </p>
+
+
+
+
+
+
+
+
+
+
 
 <footer id="site-footer"></footer> <!-- This gets edited by the script -->
 <script async src="footer.js"></script>

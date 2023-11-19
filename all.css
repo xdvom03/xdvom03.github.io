@@ -1,20 +1,50 @@
 body { 
-  background: #abc;
+  background: #4b8;
   text-align: justify;
-  margin-left: 5%;
-  margin-right: 20%;
+  margin-left: 10%;
+  margin-right: 10%;
 }
 
-div, p, header, footer {
+div, p, header, footer, label {
   font-family: "Times New Roman", serif;
   color: #036;
+  font-size: 18px;
 }
 
 a {
-    font-family: "Times New Roman", serif;
-  }
+  font-family: "Times New Roman", serif;
+}
 
 a:link { color: #084 }
 a:visited { color: #060 }
 a:hover { color: #09e }
-a:active { color: #abc }
+a:active { color: #000 }
+
+.wide-slider
+{
+    width: 1600px;
+}
+
+i {
+  color: #440;
+}
+
+.inline-flex-parent {
+  display: inline-flex;
+}
+
+.box {
+  padding:5px;
+  border: 1px solid #440;
+}
+
+img, video {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+
+.intro {
+  background:#7d8;
+  margin: 20px;
+  padding: 2px;
+}
