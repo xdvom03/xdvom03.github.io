@@ -1,5 +1,5 @@
 body { 
-  background: #4b8;
+  background: #fff;
   text-align: justify;
   margin-left: 10%;
   margin-right: 10%;
@@ -44,7 +44,7 @@ img, video {
 }
 
 .intro {
-  background:#7d8;
+  background:#aaa;
   margin: 20px;
   padding: 2px;
 }
